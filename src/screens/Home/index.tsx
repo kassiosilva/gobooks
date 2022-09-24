@@ -17,31 +17,36 @@ import {
 
 export function Home() {
   const [books, setBooks] = useState<BookProps[]>([]);
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const { data } = await api.get('/volumes?q=react&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8');
-  
-        const newData = data.items.map(book => {
-          return {
-            id: book.id,
-            photo_url: book.volumeInfo.imageLinks.smallThumbnail,
-            name: book.volumeInfo.title,
-            description: book.volumeInfo.subtitle
-          }
-        }) as BookProps[];
+  async function fetchBooks(value: string) {
+    try {
+      const { data } = await api.get(`/volumes?q=${value}&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8`);
 
-        console.log(newData);
-  
-        setBooks(newData);
-      } catch (error) {
-        Alert.alert('Ops...', 'Não foi possível realizar a sua consulta');
-      }
+      const newData = data.items.map(book => {
+        return {
+          id: book.id,
+          photo_url: book.volumeInfo.imageLinks.smallThumbnail,
+          name: book.volumeInfo.title,
+          description: book.volumeInfo.subtitle
+        }
+      }) as BookProps[];
+
+      console.log(newData);
+
+      setBooks(newData);
+    } catch (error) {
+      Alert.alert('Ops...', 'Não foi possível realizar a sua consulta');
     }
- 
-    fetchBooks();
-  }, [])
+  }
+
+  function handleSearch() {
+    fetchBooks(search);
+  }
+
+  function handleClear() {
+    setSearch('');
+  }
 
   return (
     <Container>
@@ -51,7 +56,12 @@ export function Home() {
         </Greeting>
       </Header>
 
-      <Search onSearch={() => {}} onClear={() => {}} />
+      <Search
+        onChangeText={setSearch}
+        value={search}
+        onSearch={handleSearch}
+        onClear={handleClear}
+      />
 
       <MenuHeader>
         <Title>Livros</Title>
