@@ -10,10 +10,12 @@ export const Content = styled(RectButton)`
   align-items: center;
 `;
 
-export const Image = styled.Image`
+export const Image = styled.Image.attrs({
+  resizeMode: 'contain',
+})`
   width: 104px;
   height: 104px;
-  border-radius: 52px;
+  /* border-radius: 52px; */
   margin-right: 20px;
 `;
 
