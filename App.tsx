@@ -1,4 +1,5 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'react-native';
 import { ActivityIndicator } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import {
@@ -6,12 +7,10 @@ import {
   Roboto_400Regular,
   Roboto_700Bold 
 } from '@expo-google-fonts/roboto';
-import { StatusBar } from 'expo-status-bar';
+
+import { Routes } from './src/routes';
 
 import theme from './src/theme';
-
-import { Home } from '@screens/Home';
-import { BookDetails } from '@screens/BookDetails';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold })
@@ -19,9 +18,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar style="light" translucent backgroundColor="transparent" />
+        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-        {fontsLoaded ? <Home /> : <ActivityIndicator />}
+        {fontsLoaded ? <Routes /> : <ActivityIndicator />}
       </GestureHandlerRootView>
     </ThemeProvider>
   );

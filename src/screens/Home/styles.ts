@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const Container = styled.View`
   flex: 1;
@@ -13,10 +14,10 @@ export const Header = styled(LinearGradient).attrs(({ theme }) => ({
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 70px 24px 58px;
+  padding: 40px 24px 58px;
 `;
 
-export const Greeting = styled.View`
+export const Greeting = styled(SafeAreaView)`
   flex-direction: row;
   align-items: center;
 `;
