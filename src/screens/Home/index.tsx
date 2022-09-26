@@ -26,14 +26,15 @@ export function Home() {
 
   const [books, setBooks] = useState<BookProps[]>([]);
   const [search, setSearch] = useState('');
+  const [newPage, setNewPage] = useState(10);
 
-  async function fetchBooks({ value, page = 0}: FetchBooksProps) {
+  async function fetchBooks({ value, page = 0 }: FetchBooksProps) {
     try {
       if(value.trim().length === 0) {
         return Alert.alert('Ops..', 'Informe o nome do livro');
       }
 
-      const { data } = await api.get(`/volumes?q=${value}&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8&startIndex=${page}&maxResults=40`);
+      const { data } = await api.get(`/volumes?q=${value}&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8&startIndex=${page}&maxResults=10`);
 
       const newData = data.items.map(book => {
         const thumbnail = book?.volumeInfo?.imageLinks?.smallThumbnail;
@@ -54,27 +55,22 @@ export function Home() {
       }) as BookProps[];
 
       setBooks(oldBooks => [...oldBooks, ...newData]);
+      setNewPage(oldPage => oldPage + 10);
     } catch (error) {
       console.log(error);
       Alert.alert('Ops...', 'Não foi possível realizar a sua consulta');
     }
   }
 
-  function loadMore() {
-    let page = 0;
-
-    if (books.length) {
-      page = books.length;
-    }
-
-    console.log(page);
-
-    fetchBooks({ value: search, page });
-  }
-
   function handleSearch() {
     setBooks([]);
+    // setPage(0);
     fetchBooks({ value: search });
+  }
+
+  function handleLoadMore() {
+    console.log(newPage);
+    fetchBooks({ value: search, page: newPage });
   }
 
   function handleClear() {
@@ -120,8 +116,8 @@ export function Home() {
           paddingBottom: 125,
           marginHorizontal: 24,
         }}
-        // onEndReached={loadMore}
-        // onEndReachedThreshold={0.1}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
       />
     </Container>
   );
