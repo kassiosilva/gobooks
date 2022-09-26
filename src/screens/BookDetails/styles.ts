@@ -2,8 +2,6 @@ import styled, { css } from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button as ButtonStyled} from '@components/Button';
-
 export const Container = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
@@ -138,9 +136,4 @@ export const ViewMoreText = styled.Text`
     font-size: ${theme.FONT_SIZE.SM}px;
     color: ${theme.COLORS.LINK};
   `}
-`;
-
-export const Button = styled(ButtonStyled)`
-  margin-top: 20px;
-  align-self: flex-end;
 `;

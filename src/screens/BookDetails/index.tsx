@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -11,9 +11,11 @@ import { AppError } from '@utils/AppError';
 
 import { ButtonBack } from '@components/ButtonBack';
 import { BookProps } from '@components/BookCard';
-
+import { Button } from '@components/Button';
 
 import { favoritesCreate } from '@storage/favorites/favoritesCreate';
+import { favoritesGetAll } from '@storage/favorites/favoritesGetAll';
+import { favoritesRemove } from '@storage/favorites/favoritesRemove';
 
 import {
   Container,
@@ -33,8 +35,7 @@ import {
   Line,
   DescriptionText,
   ViewMore,
-  ViewMoreText,
-  Button
+  ViewMoreText
 } from './styles';
 
 export interface BookDetailsProps {
@@ -48,10 +49,23 @@ export function BookDetails() {
 
   const [showMore, setShowMore] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState(10);
+  const [isFavorited, setIsFavorited] = useState(false);
 
-  const onTextLayout = (e) => {
-    setShowMore(e.nativeEvent.lines.length > numberOfLines);
-  };
+  const priceFormatted = formatMoney(data.price);
+
+  async function checkBookIsFavorited() {
+    const books: BookProps[] = await favoritesGetAll();
+
+    const favoriteAlreadyExists = books.some(
+      book => book.id === data.id
+    );
+
+    if (favoriteAlreadyExists) {
+      return setIsFavorited(true);
+    }
+
+    return setIsFavorited(false)
+  }
 
   const publishedDateFormatted = () => {
     if (!data.publishedDate) {
@@ -63,18 +77,36 @@ export function BookDetails() {
     })
   };
 
+  function onTextLayout(e) {
+    setShowMore(e.nativeEvent.lines.length > numberOfLines);
+  };
+
   function handleToggle() {
     setNumberOfLines(oldValue => oldValue === 10 ? 0 : 10);
   }
 
-  async function handleNewFavorite() {
+  async function handleFavoriteBook() {
     try{
-      await favoritesCreate(data);
+      if (!isFavorited) {
+        await favoritesCreate(data);
+
+        return setIsFavorited(true);
+      }
+
+      await favoritesRemove(data.id);
+
+      return setIsFavorited(false);
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert('Ops...', error.message)
       } else {
-        Alert.alert('Ops...', 'Não foi possível favoritar esse livro.')
+        Alert.alert(
+          'Ops...',
+          !isFavorited
+            ? 'Não foi possível favoritar esse livro.'
+            : 'Não foi possível remover esse livro dos favoritos.'
+        );
+
         console.log(error);
       }
     }
@@ -86,8 +118,9 @@ export function BookDetails() {
   const typeIconToggleDescription = 
     numberOfLines === 0 ? 'chevron-up' : 'chevron-down';
 
-
-  const priceFormatted = formatMoney(data.price);
+  useEffect(() => {
+    checkBookIsFavorited();
+  }, [])
   
   return (
     <Container>
@@ -144,8 +177,9 @@ export function BookDetails() {
         </Description>
 
         <Button
-          onPress={handleNewFavorite}
-          title='Adicionar aos favoritos'
+          onPress={handleFavoriteBook}
+          title={!isFavorited ? 'Adicionar aos favoritos' : 'Remover dos favoritos'}
+          type={!isFavorited ? 'add' : 'remove'}
         />
       </Content>
     </Container>

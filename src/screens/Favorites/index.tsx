@@ -19,11 +19,9 @@ export function Favorites() {
 
   const [favorites, setFavorites] = useState<BookProps[]>([]);
 
-  async function fetchGroups() {
+  async function fetchFavoritesBooks() {
     try {
       const data = await favoritesGetAll();
-
-      console.log(data);
 
       setFavorites(data);
     } catch(error) {
@@ -36,7 +34,7 @@ export function Favorites() {
   }
 
   useFocusEffect(useCallback(() => {
-    fetchGroups();
+    fetchFavoritesBooks();
   }, []));
 
   return (

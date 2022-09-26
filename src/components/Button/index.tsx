@@ -4,11 +4,12 @@ import { Container, Text } from './styles';
 
 interface Props extends RectButtonProps {
   title: string;
+  type?: 'add' | 'remove';
 }
 
-export function Button({ title, ...rest }: Props) {
+export function Button({ title, type = 'add', ...rest }: Props) {
   return (
-    <Container {...rest}>
+    <Container type={type} {...rest}>
       <Text>{title}</Text>
     </Container>
   )
