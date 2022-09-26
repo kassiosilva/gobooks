@@ -17,7 +17,13 @@ export interface BookProps {
   id: string;
   photo_url: string;
   name: string;
+  subtitle: string;
   description: string;
+  price: number;
+  author: string,
+  publisher: string,
+  publishedDate: Date,
+  moreInfos: string,
 }
 
 interface Props extends RectButtonProps {
@@ -38,7 +44,7 @@ export function BookCard({ data, ...rest }: Props) {
             <Feather name="chevron-right" size={18} color={COLORS.SHAPE} />
           </Identification>
 
-          <Description>{data.description}</Description>
+          <Description>{data.subtitle}</Description>
         </Details>
       </Content>
 
