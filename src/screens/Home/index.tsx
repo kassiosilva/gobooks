@@ -29,6 +29,10 @@ export function Home() {
 
   async function fetchBooks({ value, page = 0}: FetchBooksProps) {
     try {
+      if(value.trim().length === 0) {
+        return Alert.alert('Ops..', 'Informe o nome do livro');
+      }
+
       const { data } = await api.get(`/volumes?q=${value}&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8&startIndex=${page}&maxResults=40`);
 
       const newData = data.items.map(book => {

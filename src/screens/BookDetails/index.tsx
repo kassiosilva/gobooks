@@ -1,15 +1,17 @@
-import { useState, useCallback } from 'react';
+import { Alert } from 'react-native';
+import { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
-
 import { format, formatDistanceToNow } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { formatMoney } from '@utils/formatMoney';
+import { AppError } from '@utils/AppError';
 
 import { ButtonBack } from '@components/ButtonBack';
 import { BookProps } from '@components/BookCard';
 
-import { formatMoney } from '@utils/formatMoney';
 
 import { favoritesCreate } from '@storage/favorites/favoritesCreate';
 
@@ -69,7 +71,12 @@ export function BookDetails() {
     try{
       await favoritesCreate(data);
     } catch (error) {
-      console.log(error);
+      if (error instanceof AppError) {
+        Alert.alert('Ops...', error.message)
+      } else {
+        Alert.alert('Ops...', 'Não foi possível favoritar esse livro.')
+        console.log(error);
+      }
     }
   };
 
