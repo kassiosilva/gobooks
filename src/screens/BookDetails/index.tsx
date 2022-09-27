@@ -1,9 +1,7 @@
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
-import { format, formatDistanceToNow } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { formatMoney } from '@utils/formatMoney';
@@ -30,12 +28,15 @@ import {
   Author,
   Publisher,
   Price,
+  MoreInfos,
+  MoreInfosText,
   Description,
   DescriptionTitle,
   Line,
   DescriptionText,
   ViewMore,
-  ViewMoreText
+  ViewMoreText,
+  Footer
 } from './styles';
 
 export interface BookDetailsProps {
@@ -67,22 +68,16 @@ export function BookDetails() {
     return setIsFavorited(false)
   }
 
-  const publishedDateFormatted = () => {
-    if (!data.publishedDate) {
-      return;
-    }
-
-    return format(new Date(data.publishedDate), "dd/MM/yyyy", {
-      locale: ptBR,
-    })
-  };
-
-  function onTextLayout(e) {
-    setShowMore(e.nativeEvent.lines.length > numberOfLines);
+  function onTextLayout(event: any) {
+    setShowMore(event.nativeEvent.lines.length > numberOfLines);
   };
 
   function handleToggle() {
     setNumberOfLines(oldValue => oldValue === 10 ? 0 : 10);
+  }
+
+  function handleMoreInformations() {
+    Linking.openURL(data.moreInfos);
   }
 
   async function handleFavoriteBook() {
@@ -139,13 +134,19 @@ export function BookDetails() {
           <WrapperInfosBook>
             <BookTitle>{data.name}</BookTitle>
 
-            <Author>{data.author ? data.author : 'Autor desconhecido'}</Author>
+            <Author>
+              {data.authors?.length > 0 ? data.authors[0] : 'Autor desconhecido'}
+            </Author>
 
             <Publisher>
               {data.publisher ? `${data.publisher}` : 'Editora não encontrada'}
             </Publisher>
 
             <Price>{priceFormatted}</Price>
+
+            <MoreInfos onPress={handleMoreInformations}>
+              <MoreInfosText>Mais informações</MoreInfosText>
+            </MoreInfos>
           </WrapperInfosBook>
         </MainInfosBook>
 
@@ -176,11 +177,13 @@ export function BookDetails() {
           )}
         </Description>
 
-        <Button
-          onPress={handleFavoriteBook}
-          title={!isFavorited ? 'Adicionar aos favoritos' : 'Remover dos favoritos'}
-          type={!isFavorited ? 'add' : 'remove'}
-        />
+        <Footer>
+          <Button
+            onPress={handleFavoriteBook}
+            title={!isFavorited ? 'Adicionar aos favoritos' : 'Remover dos favoritos'}
+            type={!isFavorited ? 'add' : 'remove'}
+          />
+        </Footer>
       </Content>
     </Container>
   )

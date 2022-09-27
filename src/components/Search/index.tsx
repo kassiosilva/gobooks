@@ -1,4 +1,4 @@
-import { TextInputProps } from 'react-native';
+import { TextInput, TextInputProps, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'styled-components/native';
 
@@ -11,25 +11,37 @@ import {
 } from './styles';
 
 interface Props extends TextInputProps {
+  inputRef?: React.RefObject<TextInput>
+  loading?: boolean;
   onSearch: () => void;
   onClear: () => void;
 }
 
-export function Search({ onSearch, onClear, ...rest }: Props) {
+export function Search({
+  inputRef,
+  loading,
+  onSearch,
+  onClear,
+  ...rest
+}: Props) {
   const { COLORS } = useTheme();
 
   return (
     <Container>
       <InputArea>
-        <Input placeHolder="pesquisar..." {...rest} />
+        <Input ref={inputRef} placeHolder="pesquisar..." {...rest} />
 
-        <ButtonClear onPress={onClear}>
+        <ButtonClear testID="button-clear" onPress={onClear}>
           <Feather name="x" size={16} />
         </ButtonClear>
       </InputArea>
 
-      <Button onPress={onSearch}>
-        <Feather name="search" size={16} color={COLORS.WHITE} />
+      <Button testID="button-search" enabled={!loading} onPress={onSearch}>
+        {loading ? (
+          <ActivityIndicator size={16} color={COLORS.WHITE} />
+        ) : (
+          <Feather name="search" size={16} color={COLORS.WHITE} />
+        )}
       </Button>
     </Container>
   )

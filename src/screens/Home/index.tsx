@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Alert, FlatList } from 'react-native';
+import { useState, useRef } from 'react';
+import { Alert, FlatList, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { TOKEN } from '@env';
 
 import api from '@services/api';
 
 import { Search } from '@components/Search';
 import { BookCard, BookProps } from '@components/BookCard';
+import { ListEmpty } from '@components/ListEmpty';
 
 import {
   Container,
@@ -13,7 +15,7 @@ import {
   Greeting,
   GreetingText,
   MenuHeader,
-  Title,
+  Title
 } from './styles';
 
 interface FetchBooksProps {
@@ -27,6 +29,9 @@ export function Home() {
   const [books, setBooks] = useState<BookProps[]>([]);
   const [search, setSearch] = useState('');
   const [newPage, setNewPage] = useState(10);
+  const [loading, setLoading] = useState(false);
+
+  const searchInputRef = useRef<TextInput>(null);
 
   async function fetchBooks({ value, page = 0 }: FetchBooksProps) {
     try {
@@ -34,7 +39,9 @@ export function Home() {
         return Alert.alert('Ops..', 'Informe o nome do livro');
       }
 
-      const { data } = await api.get(`/volumes?q=${value}&key=AIzaSyD-p6_ShBCgbXTAwrrfIJiolNLHVhrg0E8&startIndex=${page}&maxResults=10`);
+      setLoading(true);
+
+      const { data } = await api.get(`/volumes?q=${value}&key=${TOKEN}&startIndex=${page}&maxResults=10`);
 
       const newData = data.items.map(book => {
         const thumbnail = book?.volumeInfo?.imageLinks?.smallThumbnail;
@@ -47,7 +54,7 @@ export function Home() {
           subtitle: book?.volumeInfo?.subtitle,
           description: book?.volumeInfo?.description,
           price,
-          author: book?.volumeInfo?.authors[0],
+          authors: book?.volumeInfo?.authors,
           publisher: book?.volumeInfo?.publisher,
           publishedDate: book?.volumeInfo?.publishedDate,
           moreInfos: book?.volumeInfo?.previewLink,
@@ -59,17 +66,18 @@ export function Home() {
     } catch (error) {
       console.log(error);
       Alert.alert('Ops...', 'Não foi possível realizar a sua consulta');
+    } finally {
+      setLoading(false);
     }
   }
 
   function handleSearch() {
     setBooks([]);
-    // setPage(0);
     fetchBooks({ value: search });
+    searchInputRef.current?.blur();
   }
 
   function handleLoadMore() {
-    console.log(newPage);
     fetchBooks({ value: search, page: newPage });
   }
 
@@ -78,7 +86,6 @@ export function Home() {
   }
 
   function handleGoToDetails(item: BookProps) {
-    console.log('ITEM', item);
     navigation.navigate('bookDetails', { data: item });
   }
 
@@ -86,15 +93,20 @@ export function Home() {
     <Container>
       <Header>
         <Greeting>
-          <GreetingText>Olá, Kássio</GreetingText>
+          <GreetingText>Olá, leitor</GreetingText>
         </Greeting>
       </Header>
 
       <Search
+        loading={loading}
+        inputRef={searchInputRef}
         onChangeText={setSearch}
         value={search}
         onSearch={handleSearch}
         onClear={handleClear}
+        autoCorrect={false}
+        onSubmitEditing={handleSearch}
+        returnKeyType="search"
       />
 
       <MenuHeader>
@@ -111,11 +123,19 @@ export function Home() {
           />
         )}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: 20,
-          paddingBottom: 125,
-          marginHorizontal: 24,
-        }}
+        contentContainerStyle={
+          [
+            books.length === 0 && { flex: 1 },
+            {
+              paddingTop: 20,
+              paddingBottom: 125,
+              marginHorizontal: 24,
+            }
+          ]
+        }
+        ListEmptyComponent={() => (
+          <ListEmpty message="Que tal pesquisar um livro?" />
+        )}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
       />

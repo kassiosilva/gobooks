@@ -20,10 +20,10 @@ export interface BookProps {
   subtitle: string;
   description: string;
   price: number;
-  author: string,
-  publisher: string,
-  publishedDate: Date,
-  moreInfos: string,
+  authors: string[];
+  publisher: string;
+  publishedDate: Date;
+  moreInfos: string;
 }
 
 interface Props extends RectButtonProps {
@@ -40,11 +40,16 @@ export function BookCard({ data, ...rest }: Props) {
 
         <Details>
           <Identification>
-            <Name>{data.name}</Name>
+            <Name numberOfLines={2} ellipsizeMode='tail'>
+              {data.name}
+            </Name>
+
             <Feather name="chevron-right" size={18} color={COLORS.SHAPE} />
           </Identification>
 
-          <Description>{data.subtitle}</Description>
+          <Description numberOfLines={2} ellipsizeMode='tail'>
+            {data.subtitle}
+          </Description>
         </Details>
       </Content>
 

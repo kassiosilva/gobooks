@@ -25,7 +25,7 @@ export const Greeting = styled(SafeAreaView)`
 export const GreetingText = styled.Text`
   ${({ theme }) => css`
     font-family: ${theme.FONT_FAMILY.BOLD};
-    font-size: 20px;
+    font-size: ${theme.FONT_SIZE.LG}px;
     color: ${theme.COLORS.TITLE}
   `}
 `;
@@ -41,10 +41,10 @@ export const MenuHeader = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
   line-height: 20px;
 
   ${({ theme }) => css`
+    font-size: ${theme.FONT_SIZE.LG}px;
     font-family: ${theme.FONT_FAMILY.REGULAR};
     color: ${theme.COLORS.SECONDARY_900}
   `}

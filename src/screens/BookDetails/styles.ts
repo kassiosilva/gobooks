@@ -32,13 +32,12 @@ export const Title = styled.Text`
 export const Content = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
-    // flexGrow: 1,
+    flexGrow: 1,
     paddingTop: 32,
     paddingBottom: 40,
     marginHorizontal: 24,
   },
 })`
-  /* flex-grow: 1; */
 `;
 
 export const MainInfosBook = styled.View`
@@ -93,6 +92,18 @@ export const Price = styled.Text`
   `}
 `;
 
+export const MoreInfos = styled.TouchableOpacity`
+  margin-top: 5px;
+`;
+
+export const MoreInfosText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    font-size: ${theme.FONT_SIZE.MD}px;
+    color: ${theme.COLORS.LINK};
+  `}
+`;
+
 export const Description = styled.View`
   margin-top: 32px;
 `;
@@ -136,4 +147,10 @@ export const ViewMoreText = styled.Text`
     font-size: ${theme.FONT_SIZE.SM}px;
     color: ${theme.COLORS.LINK};
   `}
+`;
+
+export const Footer = styled.View`
+  flex: 1;
+  justify-content: flex-end;
+  margin-top: 30px;
 `;

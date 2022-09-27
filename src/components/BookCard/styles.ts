@@ -15,7 +15,6 @@ export const Image = styled.Image.attrs({
 })`
   width: 104px;
   height: 104px;
-  /* border-radius: 52px; */
   margin-right: 20px;
 `;
 
@@ -25,9 +24,9 @@ export const Details = styled.View`
 
 export const Name = styled.Text`
   flex: 1;
-  font-size: 20px;
-
+  
   ${({ theme }) => css`
+    font-size: ${theme.FONT_SIZE.LG}px;
     font-family: ${theme.FONT_FAMILY.REGULAR};
     color: ${theme.COLORS.SECONDARY_900};
   `}
@@ -39,11 +38,11 @@ export const Identification = styled.View`
 `;
 
 export const Description = styled.Text`
-  font-size: 12px;
   line-height: 20px;
   margin-right: 21px;
-
+  
   ${({ theme }) => css`
+    font-size: ${theme.FONT_SIZE.SM}px;
     font-family: ${theme.FONT_FAMILY.REGULAR};
     color: ${theme.COLORS.SECONDARY_400};
   `}

@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { ButtonBack } from '@components/ButtonBack';
 import { BookCard, BookProps } from '@components/BookCard';
+import { ListEmpty } from '@components/ListEmpty';
 
 import { favoritesGetAll } from '@storage/favorites/favoritesGetAll';
 
@@ -57,11 +58,19 @@ export function Favorites() {
           />
         )}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: 20,
-          paddingBottom: 125,
-          marginHorizontal: 24,
-        }}
+        contentContainerStyle={
+          [
+            favorites.length === 0 && { flex: 1 },
+            {
+              paddingTop: 20,
+              paddingBottom: 125,
+              marginHorizontal: 24,
+            }
+          ]
+        }
+        ListEmptyComponent={() => (
+          <ListEmpty message="Adicione aqui os seus livros favoritos" />
+        )}
       />
     </Container>
   );
