@@ -3,9 +3,9 @@
 </h1>
 
 <p align="center" style="margin-right: 8px">
-  <img width="300" src="./assets/pesquisa.jpg" />
-  <img width="300" src="./assets/detalhes.jpg" />
-  <img width="300" src="./assets/favoritos.jpg" />
+  <img width="250" src="./assets/pesquisa.jpg" />
+  <img width="250" src="./assets/detalhes.jpg" />
+  <img width="250" src="./assets/favoritos.jpg" />
 </p>
 
 ## 💻 Sobre o projeto
